@@ -1,0 +1,29 @@
+{
+  "name": "convolens",
+  "version": "0.1.0",
+  "description": "Local-first AI coding conversation indexer and title governor.",
+  "type": "module",
+  "bin": {
+    "convolens": "./bin/convolens.mjs",
+    "rename-codex": "./bin/rename-codex.mjs"
+  },
+  "scripts": {
+    "test": "node --test",
+    "doctor": "node ./bin/convolens.mjs doctor",
+    "scan": "node ./bin/convolens.mjs scan",
+    "preview": "node ./bin/convolens.mjs title preview --all"
+  },
+  "keywords": [
+    "ai",
+    "coding-agent",
+    "conversation-history",
+    "codex",
+    "claude-code",
+    "cursor",
+    "local-first"
+  ],
+  "license": "MIT",
+  "engines": {
+    "node": ">=18"
+  }
+}

@@ -1,0 +1,519 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ConvoLens 计划说明</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #17202a;
+      --muted: #607086;
+      --line: #d8dee8;
+      --paper: #f7f8fb;
+      --panel: #ffffff;
+      --accent: #0f766e;
+      --accent-soft: #dff5f2;
+      --warn: #9a5b00;
+      --warn-soft: #fff0d6;
+      --good: #155e36;
+      --good-soft: #e2f7ea;
+      --shadow: 0 18px 50px rgba(23, 32, 42, 0.08);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+      background: var(--paper);
+      color: var(--ink);
+      line-height: 1.65;
+    }
+
+    main {
+      width: min(1120px, calc(100% - 40px));
+      margin: 0 auto;
+      padding: 42px 0 56px;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1.15fr) minmax(280px, 0.85fr);
+      gap: 28px;
+      align-items: stretch;
+      margin-bottom: 28px;
+    }
+
+    .hero-copy,
+    .snapshot,
+    section {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow);
+      border-radius: 8px;
+    }
+
+    .hero-copy {
+      padding: 34px;
+    }
+
+    .eyebrow {
+      margin: 0 0 10px;
+      color: var(--accent);
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(30px, 4.5vw, 56px);
+      line-height: 1.08;
+      letter-spacing: 0;
+    }
+
+    .lead {
+      margin: 22px 0 0;
+      color: var(--muted);
+      font-size: 18px;
+      max-width: 760px;
+    }
+
+    .snapshot {
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 18px;
+    }
+
+    .snapshot strong {
+      display: block;
+      font-size: 16px;
+      margin-bottom: 8px;
+    }
+
+    .snapshot p {
+      margin: 0;
+      color: var(--muted);
+    }
+
+    .tag-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .tag {
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 6px 10px;
+      font-size: 13px;
+      color: #314155;
+      background: #fbfcfe;
+    }
+
+    section {
+      margin-top: 20px;
+      padding: 28px;
+    }
+
+    h2 {
+      margin: 0 0 16px;
+      font-size: 24px;
+      line-height: 1.25;
+      letter-spacing: 0;
+    }
+
+    h3 {
+      margin: 0 0 8px;
+      font-size: 17px;
+      letter-spacing: 0;
+    }
+
+    p {
+      margin: 0 0 14px;
+    }
+
+    .muted {
+      color: var(--muted);
+    }
+
+    .principle {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 18px;
+    }
+
+    .tile {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 18px;
+      background: #fbfcfe;
+      min-height: 142px;
+    }
+
+    .tile .num {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      display: inline-grid;
+      place-items: center;
+      margin-bottom: 12px;
+      color: #fff;
+      background: var(--accent);
+      font-weight: 700;
+      font-size: 14px;
+    }
+
+    .flow {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    .step {
+      position: relative;
+      min-height: 116px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fbfcfe;
+      padding: 16px;
+    }
+
+    .step:not(:last-child)::after {
+      content: "";
+      position: absolute;
+      top: 50%;
+      right: -8px;
+      width: 14px;
+      height: 2px;
+      background: var(--accent);
+    }
+
+    .matrix {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 14px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+    }
+
+    th,
+    td {
+      text-align: left;
+      vertical-align: top;
+      padding: 14px;
+      border-bottom: 1px solid var(--line);
+      font-size: 15px;
+    }
+
+    th {
+      background: #edf4f3;
+      color: #163c39;
+    }
+
+    tr:last-child td {
+      border-bottom: 0;
+    }
+
+    .pill {
+      display: inline-block;
+      border-radius: 999px;
+      padding: 4px 9px;
+      font-size: 12px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .ok {
+      color: var(--good);
+      background: var(--good-soft);
+    }
+
+    .care {
+      color: var(--warn);
+      background: var(--warn-soft);
+    }
+
+    .neutral {
+      color: #314155;
+      background: #eef2f7;
+    }
+
+    .timeline {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 16px;
+    }
+
+    .phase {
+      border-left: 5px solid var(--accent);
+      border-radius: 8px;
+      background: #fbfcfe;
+      padding: 18px;
+      border-top: 1px solid var(--line);
+      border-right: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .callout {
+      margin-top: 18px;
+      padding: 18px;
+      border-radius: 8px;
+      background: var(--accent-soft);
+      border: 1px solid #b7e6df;
+    }
+
+    .callout p:last-child,
+    .tile p:last-child,
+    .phase p:last-child,
+    .step p:last-child {
+      margin-bottom: 0;
+    }
+
+    code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 0.95em;
+      background: #eef2f7;
+      border-radius: 5px;
+      padding: 2px 5px;
+    }
+
+    @media (max-width: 880px) {
+      main {
+        width: min(100% - 28px, 720px);
+        padding-top: 24px;
+      }
+
+      .hero,
+      .principle,
+      .timeline {
+        grid-template-columns: 1fr;
+      }
+
+      .flow {
+        grid-template-columns: 1fr;
+      }
+
+      .step:not(:last-child)::after {
+        top: auto;
+        right: auto;
+        left: 24px;
+        bottom: -8px;
+        width: 2px;
+        height: 14px;
+      }
+
+      .matrix {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <div class="hero">
+      <div class="hero-copy">
+        <p class="eyebrow">第一性原理版计划</p>
+        <h1>让 AI 对话历史真正可找回</h1>
+        <p class="lead">
+          这个项目不是给某一个工具打补丁，而是做一个统一的对话治理层：把 Codex、Claude Code、Cursor、Trae、Qoder、CodeBuddy、Antigravity 等 AI 编程工具里的会话，统一读出来、命名、筛选、索引，并在安全时写回标题。
+        </p>
+      </div>
+
+      <aside class="snapshot">
+        <div>
+          <strong>一句话判断</strong>
+          <p>真正的问题不是“标题不好听”，而是 AI 工具越来越多，历史会话没有统一的可检索语义层。</p>
+        </div>
+        <div class="tag-row">
+          <span class="tag">本地优先</span>
+          <span class="tag">多平台适配</span>
+          <span class="tag">标题治理</span>
+          <span class="tag">外部索引</span>
+          <span class="tag">安全写回</span>
+        </div>
+      </aside>
+    </div>
+
+    <section>
+      <h2>一、从本质看，这个项目解决什么</h2>
+      <p>
+        AI 编程工具正在变成新的工作记忆。你不是只在里面聊天，而是在里面安装软件、配置 GitHub、排查权限、写代码、做产品判断、沉淀长期计划。问题是，这些记忆分散在不同工具里，而且默认标题通常只截取第一句话。
+      </p>
+      <p class="muted">
+        所以核心问题不是“重命名”，而是“把分散的 AI 工作记忆变成可检索、可治理、可迁移的知识索引”。
+      </p>
+
+      <div class="principle">
+        <div class="tile">
+          <span class="num">1</span>
+          <h3>对话是工作资产</h3>
+          <p class="muted">每个会话都包含目标、过程、结果、阻塞和决策，不应该只按时间堆在侧边栏。</p>
+        </div>
+        <div class="tile">
+          <span class="num">2</span>
+          <h3>标题是检索入口</h3>
+          <p class="muted">好标题必须说明对象和动作，例如“GitHub CLI：浏览器认证阻塞”。</p>
+        </div>
+        <div class="tile">
+          <span class="num">3</span>
+          <h3>平台不能被强改</h3>
+          <p class="muted">能用官方接口就用官方接口；不能写回就做外部索引，不破坏原工具。</p>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>二、最小抽象是什么</h2>
+      <p>
+        所有工具都可以先被抽象成同一种东西：一个 provider 下面有很多 conversation，每个 conversation 里有 turns、workspace、title、status 和 artifacts。
+      </p>
+
+      <div class="flow">
+        <div class="step">
+          <h3>发现</h3>
+          <p class="muted">找到各平台的会话来源：API、JSONL、SQLite、导出文件或 CLI。</p>
+        </div>
+        <div class="step">
+          <h3>解析</h3>
+          <p class="muted">提取用户目标、关键动作、结果、阻塞、项目路径。</p>
+        </div>
+        <div class="step">
+          <h3>命名</h3>
+          <p class="muted">生成“对象：动作状态”的可检索标题。</p>
+        </div>
+        <div class="step">
+          <h3>索引</h3>
+          <p class="muted">统一写入本地搜索库，支持跨工具筛选。</p>
+        </div>
+        <div class="step">
+          <h3>写回</h3>
+          <p class="muted">只有官方或验证安全的平台才写回原工具。</p>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>三、平台适配不能一刀切</h2>
+      <p>
+        不同 AI 工具的开放程度不同，所以必须分层适配。这个设计比“直接改每个工具的数据库”更稳。
+      </p>
+
+      <table class="matrix">
+        <thead>
+          <tr>
+            <th>层级</th>
+            <th>能力</th>
+            <th>含义</th>
+            <th>适用情况</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="pill neutral">L0</span></td>
+            <td>只读导入</td>
+            <td>只读取历史，不改原工具。</td>
+            <td>Claude Code JSONL、未知平台导出文件。</td>
+          </tr>
+          <tr>
+            <td><span class="pill neutral">L1</span></td>
+            <td>外部索引</td>
+            <td>生成标题和摘要，但只存在 ConvoLens 自己的索引里。</td>
+            <td>没有稳定写回 API 的工具。</td>
+          </tr>
+          <tr>
+            <td><span class="pill ok">L2</span></td>
+            <td>官方写回</td>
+            <td>通过官方协议、CLI 或 API 改标题。</td>
+            <td>Codex app-server 的 <code>thread/name/set</code>。</td>
+          </tr>
+          <tr>
+            <td><span class="pill care">L3</span></td>
+            <td>验证后本地写回</td>
+            <td>确认 schema、备份、回滚后，才允许改本地库。</td>
+            <td>Cursor 这类本地 SQLite 场景。</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>四、第一版怎么做</h2>
+      <div class="timeline">
+        <div class="phase">
+          <h3>阶段 1：先能统一看见</h3>
+          <p class="muted">做扫描器和本地索引。先支持 Codex、Claude Code、Cursor 的只读导入，解决“历史分散”的问题。</p>
+        </div>
+        <div class="phase">
+          <h3>阶段 2：再能安全命名</h3>
+          <p class="muted">生成标题预览，支持手动确认和批量应用。Codex 走官方写回，其他平台先走外部索引。</p>
+        </div>
+        <div class="phase">
+          <h3>阶段 3：最后做自动治理</h3>
+          <p class="muted">后台每 5 分钟扫描，但只自动修复明显坏标题；普通标题进入预览，不贸然覆盖。</p>
+        </div>
+      </div>
+
+      <div class="callout">
+        <h3>最重要的产品判断</h3>
+        <p>
+          “全部适配”不等于“全部强行写回”。真正稳定的开源项目应该先统一读和搜，再按平台能力逐步解锁写回。这样既能覆盖 Codex、Claude Code、Cursor、Trae、Qoder、CodeBuddy、Antigravity，也不会因为某个平台升级内部存储就把用户历史弄乱。
+        </p>
+      </div>
+    </section>
+
+    <section>
+      <h2>五、标题标准</h2>
+      <p>标题要像一个索引项，而不是一句聊天开头。标准格式是：</p>
+      <p><code>对象 / 项目 / 平台：动作 + 状态</code></p>
+
+      <table class="matrix">
+        <thead>
+          <tr>
+            <th>差标题</th>
+            <th>好标题</th>
+            <th>为什么好</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>帮我配置一下</td>
+            <td>GitHub CLI：浏览器认证配置</td>
+            <td>有对象，有动作，能搜索。</td>
+          </tr>
+          <tr>
+            <td>/goal 做一个高 star 项目...</td>
+            <td>ProofRoute：构建 LLM 路由器</td>
+            <td>保留项目核心，不保留长提示词。</td>
+          </tr>
+          <tr>
+            <td>继续</td>
+            <td>Codex 历史：自动重命名方案</td>
+            <td>说明这轮到底在推进什么。</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>六、最终形态</h2>
+      <p>
+        ConvoLens 最终应该像一个 AI 工作记忆总控台：你可以搜“GitHub 权限”“老板预审”“LLM 路由器”“Token 统计”，它会跨 Codex、Claude Code、Cursor、Trae、Qoder、CodeBuddy、Antigravity 找到相关会话，并告诉你当时做了什么、结果是什么、哪里阻塞。
+      </p>
+      <p class="muted">
+        这才是第一性原理下的核心：不是美化侧边栏，而是把 AI 编程过程中的分散记忆重新组织成可复用资产。
+      </p>
+    </section>
+  </main>
+</body>
+</html>

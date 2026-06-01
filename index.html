@@ -1,0 +1,687 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Codex 标题治理 Agent：第一性原理说明</title>
+  <style>
+    :root {
+      --ink: #18212f;
+      --muted: #647084;
+      --line: #d9dee8;
+      --soft: #f5f7fb;
+      --paper: #ffffff;
+      --blue: #2563eb;
+      --green: #16805a;
+      --amber: #a06005;
+      --red: #bd2d2d;
+      --violet: #6d44c6;
+      --shadow: 0 14px 34px rgba(24, 33, 47, 0.08);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: #eef2f7;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+        "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+      line-height: 1.65;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .shell {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 280px minmax(0, 1fr);
+    }
+
+    .sidebar {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      padding: 28px 22px;
+      background: #111827;
+      color: #f7fafc;
+      overflow: auto;
+    }
+
+    .brand {
+      display: grid;
+      gap: 8px;
+      padding-bottom: 24px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+    }
+
+    .brand strong {
+      font-size: 21px;
+      line-height: 1.25;
+      letter-spacing: 0;
+    }
+
+    .brand span {
+      color: #b9c3d3;
+      font-size: 13px;
+    }
+
+    .nav {
+      display: grid;
+      gap: 8px;
+      margin-top: 22px;
+    }
+
+    .nav a {
+      padding: 10px 12px;
+      border-radius: 8px;
+      color: #cfd7e6;
+      font-size: 14px;
+    }
+
+    .nav a:hover {
+      background: rgba(255, 255, 255, 0.08);
+      color: #ffffff;
+    }
+
+    .main {
+      padding: 34px;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(320px, 0.9fr);
+      gap: 28px;
+      align-items: stretch;
+      margin-bottom: 28px;
+    }
+
+    .hero-copy {
+      padding: 34px;
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--blue);
+      font-weight: 700;
+      font-size: 13px;
+      margin-bottom: 12px;
+    }
+
+    h1,
+    h2,
+    h3 {
+      margin: 0;
+      letter-spacing: 0;
+      line-height: 1.24;
+    }
+
+    h1 {
+      max-width: 920px;
+      font-size: clamp(32px, 5vw, 58px);
+    }
+
+    h2 {
+      font-size: 26px;
+      margin-bottom: 16px;
+    }
+
+    h3 {
+      font-size: 18px;
+      margin-bottom: 8px;
+    }
+
+    p {
+      margin: 0;
+      color: var(--muted);
+    }
+
+    .lead {
+      max-width: 780px;
+      margin-top: 18px;
+      font-size: 17px;
+      color: #455167;
+    }
+
+    .metric-panel {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+      padding: 22px;
+      background: #202a3a;
+      border-radius: 8px;
+      color: white;
+      box-shadow: var(--shadow);
+    }
+
+    .metric {
+      padding: 18px;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.06);
+    }
+
+    .metric b {
+      display: block;
+      font-size: 28px;
+      line-height: 1;
+      margin-bottom: 8px;
+    }
+
+    .metric span {
+      color: #cbd5e1;
+      font-size: 13px;
+    }
+
+    section {
+      margin-top: 28px;
+      padding: 28px;
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+    }
+
+    .section-kicker {
+      color: var(--blue);
+      font-size: 13px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 18px;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 18px;
+    }
+
+    .tile,
+    .rule,
+    .step {
+      padding: 18px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fbfcff;
+    }
+
+    .tile strong,
+    .rule strong,
+    .step strong {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 16px;
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      min-height: 25px;
+      margin-bottom: 12px;
+      padding: 2px 9px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .tag.blue {
+      color: #1d4ed8;
+      background: #dbeafe;
+    }
+
+    .tag.green {
+      color: #047857;
+      background: #d1fae5;
+    }
+
+    .tag.amber {
+      color: #92400e;
+      background: #fef3c7;
+    }
+
+    .tag.red {
+      color: #b91c1c;
+      background: #fee2e2;
+    }
+
+    .tag.violet {
+      color: #5b21b6;
+      background: #ede9fe;
+    }
+
+    .flow {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(120px, 1fr));
+      gap: 12px;
+      margin-top: 18px;
+    }
+
+    .flow .step {
+      position: relative;
+      min-height: 142px;
+    }
+
+    .flow .step:not(:last-child)::after {
+      content: "→";
+      position: absolute;
+      top: 50%;
+      right: -13px;
+      transform: translateY(-50%);
+      color: var(--muted);
+      font-weight: 700;
+    }
+
+    .compare {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: 18px;
+    }
+
+    .example-list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .example {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 34px minmax(0, 1fr);
+      gap: 10px;
+      align-items: center;
+      padding: 14px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fbfcff;
+    }
+
+    .bad,
+    .good {
+      min-height: 54px;
+      padding: 10px 12px;
+      border-radius: 8px;
+      font-size: 14px;
+    }
+
+    .bad {
+      color: #991b1b;
+      background: #fff1f2;
+    }
+
+    .good {
+      color: #065f46;
+      background: #ecfdf5;
+      font-weight: 700;
+    }
+
+    .arrow {
+      color: var(--muted);
+      font-weight: 800;
+      text-align: center;
+    }
+
+    .stack {
+      display: grid;
+      gap: 12px;
+      margin-top: 18px;
+    }
+
+    .layer {
+      display: grid;
+      grid-template-columns: 170px minmax(0, 1fr);
+      gap: 14px;
+      align-items: center;
+      padding: 16px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fbfcff;
+    }
+
+    .layer b {
+      color: var(--ink);
+    }
+
+    .formula {
+      margin-top: 18px;
+      padding: 18px;
+      border-left: 4px solid var(--blue);
+      background: #f8fbff;
+      border-radius: 0 8px 8px 0;
+      color: #334155;
+      font-weight: 700;
+    }
+
+    .checklist {
+      display: grid;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .check {
+      display: grid;
+      grid-template-columns: 28px minmax(0, 1fr);
+      gap: 10px;
+      align-items: start;
+      color: #475569;
+    }
+
+    .check i {
+      display: grid;
+      place-items: center;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: #e0f2fe;
+      color: #0369a1;
+      font-style: normal;
+      font-weight: 800;
+      font-size: 13px;
+    }
+
+    .footer-note {
+      margin: 28px 0 12px;
+      color: #667085;
+      text-align: center;
+      font-size: 13px;
+    }
+
+    @media (max-width: 1040px) {
+      .shell {
+        grid-template-columns: 1fr;
+      }
+
+      .sidebar {
+        position: relative;
+        height: auto;
+      }
+
+      .hero,
+      .grid-2,
+      .grid-3,
+      .compare,
+      .flow {
+        grid-template-columns: 1fr;
+      }
+
+      .flow .step:not(:last-child)::after {
+        content: "↓";
+        top: auto;
+        right: 50%;
+        bottom: -18px;
+        transform: translateX(50%);
+      }
+    }
+
+    @media (max-width: 640px) {
+      .main {
+        padding: 18px;
+      }
+
+      .hero-copy,
+      section {
+        padding: 20px;
+      }
+
+      .metric-panel,
+      .example,
+      .layer {
+        grid-template-columns: 1fr;
+      }
+
+      .arrow {
+        transform: rotate(90deg);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <aside class="sidebar">
+      <div class="brand">
+        <strong>Codex 标题治理 Agent</strong>
+        <span>把左侧对话列表从“看不懂”变成“可检索的记忆索引”。</span>
+      </div>
+      <nav class="nav" aria-label="页面导航">
+        <a href="#problem">问题本质</a>
+        <a href="#principles">第一性原理</a>
+        <a href="#architecture">系统方法</a>
+        <a href="#flow">运行流程</a>
+        <a href="#quality">标题质量门</a>
+        <a href="#examples">命名例子</a>
+        <a href="#roadmap">落地阶段</a>
+      </nav>
+    </aside>
+
+    <main class="main">
+      <div class="hero">
+        <div class="hero-copy">
+          <div class="eyebrow">从标题混乱到可检索记忆</div>
+          <h1>这个项目的核心不是“改几个名字”，而是给 Codex 对话建立一套可靠的标题治理系统。</h1>
+          <p class="lead">
+            左侧对话标题本质上是你的工作记忆索引。默认标题如果直接截取首句或 goal，就会又长又乱；真正需要的是：
+            谁的项目、做了什么、最后处于什么状态，一眼能看懂。
+          </p>
+        </div>
+        <div class="metric-panel" aria-label="方案关键信息">
+          <div class="metric">
+            <b>56</b>
+            <span>当前未归档线程，需要先做历史预览再批量应用。</span>
+          </div>
+          <div class="metric">
+            <b>13</b>
+            <span>明显超长标题，是自动治理优先目标。</span>
+          </div>
+          <div class="metric">
+            <b>5min</b>
+            <span>闲置 5 分钟生成候选，不等于立刻改所有标题。</span>
+          </div>
+          <div class="metric">
+            <b>API</b>
+            <span>优先走官方 thread/name/set，避免直接改内部库。</span>
+          </div>
+        </div>
+      </div>
+
+      <section id="problem">
+        <div class="section-kicker">Problem</div>
+        <h2>问题本质：标题是索引，不是聊天摘要</h2>
+        <div class="grid-3">
+          <div class="tile">
+            <span class="tag red">表象</span>
+            <strong>左侧标题太长、太散、不可找</strong>
+            <p>很多标题直接使用用户首句、完整 goal 或临时口语，过一段时间后无法判断里面到底做了什么。</p>
+          </div>
+          <div class="tile">
+            <span class="tag amber">根因</span>
+            <strong>默认命名没有“检索目标”</strong>
+            <p>它可能能表达开头，却不能表达任务对象、动作、结果和状态，所以标题对未来的你没有帮助。</p>
+          </div>
+          <div class="tile">
+            <span class="tag green">解法</span>
+            <strong>把命名变成治理流程</strong>
+            <p>先识别内容，再生成候选，再通过质量门，最后用官方接口写入并验证 UI 是否一致。</p>
+          </div>
+        </div>
+        <div class="formula">
+          好标题 = 可识别对象 + 关键动作 + 必要状态。短不是目标，可检索才是目标。
+        </div>
+      </section>
+
+      <section id="principles">
+        <div class="section-kicker">First Principles</div>
+        <h2>第一性原理：为什么要这样设计</h2>
+        <div class="grid-2">
+          <div class="rule">
+            <span class="tag blue">原则 1</span>
+            <strong>标题是未来检索入口</strong>
+            <p>标题的第一职责不是好看，而是让你半年后能按“项目、动作、状态”找回这次工作。</p>
+          </div>
+          <div class="rule">
+            <span class="tag blue">原则 2</span>
+            <strong>用户手动权大于自动权</strong>
+            <p>你自己改过的标题代表明确意图，自动 agent 不能覆盖，除非你显式 force。</p>
+          </div>
+          <div class="rule">
+            <span class="tag blue">原则 3</span>
+            <strong>官方协议优先于内部文件</strong>
+            <p>Codex 内部 SQLite 不是稳定 API。能用 thread/name/set，就不直接写库。</p>
+          </div>
+          <div class="rule">
+            <span class="tag blue">原则 4</span>
+            <strong>候选和应用必须分开</strong>
+            <p>5 分钟可以生成候选，但只有坏标题能快速自动应用，普通标题要等任务更稳定。</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="architecture">
+        <div class="section-kicker">Architecture</div>
+        <h2>系统方法：三层能力，而不是一个黑盒脚本</h2>
+        <div class="stack">
+          <div class="layer">
+            <b>手动权限层</b>
+            <p>提供 `rename-codex "新标题"` 和 `rename-codex thread_id "新标题"`，先满足你随时改名的需求。</p>
+          </div>
+          <div class="layer">
+            <b>历史整理层</b>
+            <p>对历史 56 个未归档线程生成预览表，人工确认后批量应用，避免一次性误改。</p>
+          </div>
+          <div class="layer">
+            <b>增量 Agent 层</b>
+            <p>每 5 分钟扫描，坏标题自动治理，普通标题保守更新，长期保持左侧列表清晰。</p>
+          </div>
+          <div class="layer">
+            <b>Fallback 层</b>
+            <p>只有官方接口不可用且你显式允许时，才考虑 SQLite fallback，并且必须备份和可回滚。</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="flow">
+        <div class="section-kicker">Flow</div>
+        <h2>运行流程：从对话内容到可检索标题</h2>
+        <div class="flow">
+          <div class="step">
+            <span class="tag blue">01</span>
+            <strong>读取线程</strong>
+            <p>通过 app-server 获取 thread list 和 thread read，拿到标题、目录、用户目标和结果线索。</p>
+          </div>
+          <div class="step">
+            <span class="tag green">02</span>
+            <strong>提取特征</strong>
+            <p>找项目名、对象名、动作词、阻塞点、完成状态，过滤寒暄和长段 goal。</p>
+          </div>
+          <div class="step">
+            <span class="tag violet">03</span>
+            <strong>生成候选</strong>
+            <p>优先用本地规则，低置信度或长会话再调用 Codex 生成候选。</p>
+          </div>
+          <div class="step">
+            <span class="tag amber">04</span>
+            <strong>质量门</strong>
+            <p>检查是否可检索、是否过泛、是否覆盖手动标题、是否该自动写入。</p>
+          </div>
+          <div class="step">
+            <span class="tag red">05</span>
+            <strong>写入验证</strong>
+            <p>调用 thread/name/set，回读确认；UI 不刷新则重启验证，失败即停止自动化。</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="quality">
+        <div class="section-kicker">Quality Gate</div>
+        <h2>标题质量门：不只是短，而是能找回来</h2>
+        <div class="compare">
+          <div class="tile">
+            <span class="tag green">必须具备</span>
+            <div class="checklist">
+              <div class="check"><i>✓</i><p>包含项目、对象或领域，例如 ProofRoute、GitHub CLI、Codex 历史。</p></div>
+              <div class="check"><i>✓</i><p>包含动作，例如安装、配置、审计、实现、上传、总结、排查。</p></div>
+              <div class="check"><i>✓</i><p>必要时体现状态，例如阻塞、待认证、已完成、方案设计。</p></div>
+              <div class="check"><i>✓</i><p>控制长度，适合左侧栏扫读，不用完整句子。</p></div>
+            </div>
+          </div>
+          <div class="tile">
+            <span class="tag red">必须避免</span>
+            <div class="checklist">
+              <div class="check"><i>!</i><p>避免 `/goal` 原文、首条用户消息、长段提示词。</p></div>
+              <div class="check"><i>!</i><p>避免“优化项目”“解决问题”“整理内容”这种泛标题。</p></div>
+              <div class="check"><i>!</i><p>避免覆盖用户手动命名或 `[keep]` 标题。</p></div>
+              <div class="check"><i>!</i><p>避免在任务还没稳定时给普通标题过早定名。</p></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="examples">
+        <div class="section-kicker">Examples</div>
+        <h2>命名例子：从不可检索到一眼明白</h2>
+        <div class="example-list">
+          <div class="example">
+            <div class="bad">/goal 你的绝对核心目标是架构、开发并记录一个具有突破性的开源项目...</div>
+            <div class="arrow">→</div>
+            <div class="good">ProofRoute：构建 LLM 路由器</div>
+          </div>
+          <div class="example">
+            <div class="bad">当前我的 GitHub 连接不上，我只在 Google 浏览器上登录了 GitHub...</div>
+            <div class="arrow">→</div>
+            <div class="good">GitHub CLI：配置浏览器认证</div>
+          </div>
+          <div class="example">
+            <div class="bad">每天晚上6点半设置一个自动化，总结以下内容...</div>
+            <div class="arrow">→</div>
+            <div class="good">每日复盘：创建 Token 统计自动化</div>
+          </div>
+          <div class="example">
+            <div class="bad">我现在 Codex 存在一个问题，就是每次我给你发个什么对话...</div>
+            <div class="arrow">→</div>
+            <div class="good">Codex 历史：设计标题治理 Agent</div>
+          </div>
+        </div>
+      </section>
+
+      <section id="roadmap">
+        <div class="section-kicker">Roadmap</div>
+        <h2>落地阶段：先可控，再自动</h2>
+        <div class="grid-3">
+          <div class="tile">
+            <span class="tag blue">Phase 1</span>
+            <strong>给你手动改名权</strong>
+            <p>先做 `rename-codex`，确保你能随时把当前对话改成自己想要的标题。</p>
+          </div>
+          <div class="tile">
+            <span class="tag green">Phase 2</span>
+            <strong>历史批量预览</strong>
+            <p>对旧会话生成预览表，你确认后再应用，避免误伤重要标题。</p>
+          </div>
+          <div class="tile">
+            <span class="tag amber">Phase 3</span>
+            <strong>增量自动治理</strong>
+            <p>后台每 5 分钟生成候选，只对明显坏标题自动写入，普通标题保守处理。</p>
+          </div>
+        </div>
+        <div class="formula">
+          最终目标：让 Codex 左侧栏变成“项目工作索引”，而不是一串随机聊天开头。
+        </div>
+      </section>
+
+      <p class="footer-note">本页是本地 HTML 说明稿，可直接打开查看，也可后续发布成可分享页面。</p>
+    </main>
+  </div>
+</body>
+</html>
